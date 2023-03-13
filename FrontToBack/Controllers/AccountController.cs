@@ -34,6 +34,7 @@ namespace FrontToBack.Controllers
             user.Email = register.Email;
             user.Fullname= register.Fullname;
             user.UserName = register.Username;
+            user.IsActive = true;
             IdentityResult result= await _userManager.CreateAsync(user,register.Password);
             if (!result.Succeeded) 
             {
@@ -70,6 +71,12 @@ namespace FrontToBack.Controllers
                     ModelState.AddModelError("", "UserName or Email or Password is Wrong");
                     return View(loginVM);
                 }
+            }
+
+            if (!user.IsActive)
+            {
+                ModelState.AddModelError("", "Account is Blocked");
+                return View(loginVM);
             }
 
           var  result = await _signInManager.PasswordSignInAsync(user,loginVM.Password,loginVM.RememberMe,true);
