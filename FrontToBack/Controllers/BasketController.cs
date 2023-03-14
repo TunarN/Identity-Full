@@ -35,6 +35,8 @@ namespace FrontToBack.Controllers
             {
                 return NotFound();
             }
+
+         
             List<BasketVM> products;
             if (Request.Cookies["basket"]==null)
             {
@@ -54,7 +56,12 @@ namespace FrontToBack.Controllers
                 products.Add(basketVM);
                
             }
+            else if (existproduct.BasketCount>=product.Count)
+            {
 
+                TempData["Error"] = "Girilen say qeder Mehsul yoxdur";
+                
+            }
             else
             {
                 existproduct.BasketCount++;
