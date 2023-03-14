@@ -301,6 +301,9 @@ namespace FrontToBack.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -335,6 +338,60 @@ namespace FrontToBack.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductImages");
+                });
+
+            modelBuilder.Entity("FrontToBack.Models.Sales", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TotalPrice")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("Sales");
+                });
+
+            modelBuilder.Entity("FrontToBack.Models.SalesProducts", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SalesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SalesId");
+
+                    b.ToTable("SalesProducts");
                 });
 
             modelBuilder.Entity("FrontToBack.Models.Slider", b =>
@@ -594,6 +651,34 @@ namespace FrontToBack.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("FrontToBack.Models.Sales", b =>
+                {
+                    b.HasOne("FrontToBack.Models.AppUser", null)
+                        .WithMany("Sales")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FrontToBack.Models.SalesProducts", b =>
+                {
+                    b.HasOne("FrontToBack.Models.Product", "Product")
+                        .WithMany("SalesProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FrontToBack.Models.Sales", "Sales")
+                        .WithMany("SalesProducts")
+                        .HasForeignKey("SalesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Sales");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -645,6 +730,11 @@ namespace FrontToBack.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("FrontToBack.Models.AppUser", b =>
+                {
+                    b.Navigation("Sales");
+                });
+
             modelBuilder.Entity("FrontToBack.Models.Demo.Author", b =>
                 {
                     b.Navigation("BookAuthors");
@@ -667,6 +757,13 @@ namespace FrontToBack.Migrations
             modelBuilder.Entity("FrontToBack.Models.Product", b =>
                 {
                     b.Navigation("ProductImages");
+
+                    b.Navigation("SalesProducts");
+                });
+
+            modelBuilder.Entity("FrontToBack.Models.Sales", b =>
+                {
+                    b.Navigation("SalesProducts");
                 });
 #pragma warning restore 612, 618
         }

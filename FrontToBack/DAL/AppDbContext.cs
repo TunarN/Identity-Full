@@ -27,6 +27,11 @@ namespace FrontToBack.DAL
         public DbSet<BookAuthor> BookAuthors { get; set; }
         public DbSet<Author> Authors { get; set; }
 
+        public DbSet<Sales> Sales { get; set; }
+        public DbSet<SalesProducts> SalesProducts { get; set; }
+
+
+
 
     }
 }
